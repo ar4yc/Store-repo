@@ -1,0 +1,21 @@
+name: Update Source
+on:
+  schedule:
+    - cron: '0 */6 * * *' # Обновлять каждые 6 часов
+  workflow_dispatch: # Позволяет запустить вручную кнопкой
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Generate AltSource
+        run: |
+          npx altsource-cli --config config.json --output apps.json
+      - name: Commit and Push
+        run: |
+          git config --global user.name "SourceBot"
+          git config --global user.email "bot@example.com"
+          git add apps.json
+          git commit -m "Update apps.json" || exit 0
+          git push
