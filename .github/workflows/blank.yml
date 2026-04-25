@@ -8,10 +8,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Разрешение на запись файла обратно в репо
+      contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4 # Обновили до v4
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -20,9 +20,9 @@ jobs:
 
       - name: Generate AltSource
         run: |
-          # Устанавливаем генератор прямо во время работы
-          npm install -g altsource-cli 
-          altsource-cli --config config.json --output apps.json
+          # Используем актуальный и надежный генератор
+          npx @altsource/cli@latest generate --config config.json --output apps.json
+        continue-on-error: true # Если один из репо в конфиге битый, процесс не прервется
 
       - name: Commit and Push
         run: |
