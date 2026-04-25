@@ -1,17 +1,29 @@
 name: Update Source
 on:
   schedule:
-    - cron: '0 */6 * * *' # Обновлять каждые 6 часов
-  workflow_dispatch: # Позволяет запустить вручную кнопкой
+    - cron: '0 */6 * * *'
+  workflow_dispatch: 
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Разрешение на запись файла обратно в репо
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4 # Обновили до v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
       - name: Generate AltSource
         run: |
-          npx altsource-cli --config config.json --output apps.json
+          # Устанавливаем генератор прямо во время работы
+          npm install -g altsource-cli 
+          altsource-cli --config config.json --output apps.json
+
       - name: Commit and Push
         run: |
           git config --global user.name "SourceBot"
